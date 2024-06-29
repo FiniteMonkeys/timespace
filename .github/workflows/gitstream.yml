@@ -1,0 +1,47 @@
+# code: language=yaml insertSpaces=true tabSize=2
+name: gitStream
+run-name: |
+  /:\ gitStream: PR #${{ fromJSON(fromJSON(github.event.inputs.client_payload)).pullRequestNumber }} from ${{ github.event.inputs.full_repository }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      client_payload:
+        description: The client payload.
+        required: true
+      full_repository:
+        description: The repository name, including the owner name.
+        required: true
+      head_ref:
+        description: A ref to the head commit.
+        required: true
+      base_ref:
+        description: A ref to the base commit.
+        required: true
+      installation_id:
+        description: The GitHub App installation ID.
+        required: false
+      resolver_url:
+        description: The resolver URL to pass results to.
+        required: true
+      resolver_token:
+        description: Optional resolver token for the resolver service.
+        required: false
+        default: ""
+
+jobs:
+  gitStream:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Evaluate Rules
+        id: rules-engine
+        uses: linear-b/gitstream-github-action@v2
+        with:
+          full_repository: ${{ github.event.inputs.full_repository }}
+          head_ref: ${{ github.event.inputs.head_ref }}
+          base_ref: ${{ github.event.inputs.base_ref }}
+          client_payload: ${{ github.event.inputs.client_payload }}
+          installation_id: ${{ github.event.inputs.installation_id }}
+          resolver_url: ${{ github.event.inputs.resolver_url }}
+          resolver_token: ${{ github.event.inputs.resolver_token }}
