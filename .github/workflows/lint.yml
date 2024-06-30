@@ -13,9 +13,6 @@ on:
 
 permissions:
   contents: read
-# id-token: write
-# issues: write
-# pull-requests: write
 
 jobs:
   lint-gha:
@@ -23,6 +20,10 @@ jobs:
     steps:
       - name: check out repository
         uses: actions/checkout@v4
+
+      - name: install actionlint-matcher
+        run: |
+          echo "::add-matcher::.github/actionlint-matcher.json"
 
       - name: Check workflow files
         uses: docker://rhysd/actionlint:latest
